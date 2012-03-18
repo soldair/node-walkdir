@@ -2,10 +2,15 @@ var EventEmitter = require('events').EventEmitter,
 fs = require('fs'),
 resolve = require('path').resolve;
 
-exports.recurseDir = recurseDir;
+exports.find = exports.recurse = exports.recurseDir = recursedir;
 
+exports.findSync = exports.recurseSync = exports.recurseDirSync = function(file,options){
+	var options = options || {};
+	options.sync = true;
+	return recursedir(file,options);
+}
 
-function recurseDir(path,options,cb){
+function recursedir(path,options,cb){
   if(typeof options == 'function') {
     cb = options;
   }
@@ -39,10 +44,16 @@ function recurseDir(path,options,cb){
     job(1);
     var statAction = function(err,stat) {
       job(-1);
-      if(err) {
+      
+      // in sync mode i found that node will sometimes return a null stat and no error =(
+      // this is reproduceable in file descriptors that no longer exist from this process
+      // after a readdir on /proc/3321/task/3321/ for example. Where 3321 is this pid
+      // node @ v0.6.10 
+      if(err || !stat) { 
         emitter.emit('fail',path,err);
         return;
       }
+
 
       //if i have evented this inode already dont again.
       if(inos[stat.dev+stat.ino] && stat.ino) return;
@@ -70,7 +81,7 @@ function recurseDir(path,options,cb){
       try{
         stat = fs.lstatSync(path);
       } catch (e) { }
-
+      if(!stat && !e) console.log('failed to stat '+path);
       statAction(e,stat);
     } else {
         fs.lstat(path,statAction);
