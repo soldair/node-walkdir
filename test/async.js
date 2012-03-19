@@ -1,13 +1,62 @@
-var finder = require('../recursedir.js').recurseDir;
+var test = require('tap').test,
+recursedir = require('../recursedir.js');
 
-var em = finder(process.argv[2] || '../../../');
+var expectedPaths = {
+'dir/foo/x':'file',
+'dir/foo/a':'dir',
+'dir/foo/a/y':'file',
+'dir/foo/a/b':'dir',
+'dir/foo/a/b/z':'file',
+'dir/foo/a/b/c':'dir',
+'dir/foo/a/b/c/w':'file'
+};
 
-var count = 0;
+test('async events',function(t){
+  var paths = [],
+  files = [],
+  dirs = [];
 
-em.on('path',function(file,stat){
-  count++;
-});
 
-em.on('end',function(){
-  console.log('found '+count+' files');	
+  var emitter = recursedir.find(__dirname+'/dir/foo',function(path){
+    //console.log('path: ',path);
+    paths.push(path.replace(__dirname+'/',''));
+  });
+
+  emitter.on('directory',function(path,stat){
+    dirs.push(path.replace(__dirname+'/',''));
+  });
+
+  emitter.on('file',function(path,stat){
+    //console.log('file: ',path); 
+    files.push(path.replace(__dirname+'/',''));
+  });
+
+  emitter.on('end',function(){
+
+     files.forEach(function(v,k){
+       t.equals(expectedPaths[v],'file','path from file event should be file');  
+     });
+
+     Object.keys(expectedPaths).forEach(function(v,k){
+       if(expectedPaths[v] == 'file') {
+          t.ok(files.indexOf(v) > -1,'should have file in files array');
+       }
+     });
+
+     dirs.forEach(function(v,k){
+       t.equals(expectedPaths[v],'dir','path from dir event should be dir '+v);  
+     });
+
+     Object.keys(expectedPaths).forEach(function(v,k){
+       if(expectedPaths[v] == 'dir') {
+          t.ok(dirs.indexOf(v) > -1,'should have dir in dirs array');
+       }
+     });
+
+     Object.keys(expectedPaths).forEach(function(v,k){
+       t.ok(paths.indexOf(v) !== -1,'should have found all expected paths '+v);
+     });
+
+     t.end();
+  });
 });

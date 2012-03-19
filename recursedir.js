@@ -5,9 +5,9 @@ resolve = require('path').resolve;
 exports.find = exports.recurse = exports.recurseDir = recursedir;
 
 exports.findSync = exports.recurseSync = exports.recurseDirSync = function(file,options){
-	var options = options || {};
-	options.sync = true;
-	return recursedir(file,options);
+  var options = options || {};
+  options.sync = true;
+  return recursedir(file,options);
 }
 
 function recursedir(path,options,cb){
@@ -18,7 +18,7 @@ function recursedir(path,options,cb){
   options = options || {};
   var emitter = new EventEmitter();
 
-  var allPaths = (options.returnObject?{}:[]),
+  var allPaths = (options.return_object?{}:[]),
   resolved = false,
   inos = {}, 
   ended = 0, 
@@ -145,11 +145,13 @@ function recursedir(path,options,cb){
   }
 
   if (options.sync) {
-    emitter.on('path',function(path,stat){
-      //save all paths?
-      if(options.returnObject) allPaths[path] = stat;
-      else allPaths.push(path);
-    });
+    if(!options.no_return){
+      emitter.on('path',function(path,stat){
+        //save all paths?
+        if(options.return_object) allPaths[path] = stat;
+        else allPaths.push(path);
+      });
+    }
   }
 
   emitter.on('directory',readdir);

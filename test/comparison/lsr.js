@@ -5,7 +5,7 @@ lsr(process.argv[2]||'./',{maxDepth:500000,recursive:true},function(err,origPath
 		console.log('eww an error! ',err);
 		return;
 	}
-
+//console.log('hit');
 	var c = 0;
 	args.forEach(function(stat){
 		if(stat.isFile()){

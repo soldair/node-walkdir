@@ -1,0 +1,29 @@
+{
+  "name": "recursedir",
+  "description": "",
+  "version": "0.0.0",
+  "author": "Ryan Day <soldair@gmail.com>",
+  "keywords": [
+    "find",
+    "walk",
+    "tree",
+    "files",
+    "fs"
+  ],
+  "main": "./recursedir.js",
+  "homepage": "http://github.com/soldair/node-recursedir",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/soldair/node-recursedir.git"
+  },
+  "scripts": {
+    "test": "./test.sh"
+  },
+  "devDependencies": {
+    "tap": "*",
+    "jshint": "0.5.x"
+  },
+  "engines": {
+    "node": ">=0.6.0"
+  }
+}

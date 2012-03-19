@@ -17,10 +17,10 @@ for root, subFolders, files in os.walk(rootdir):
 
         if inostr not in ino:
             ino[stat.st_ino] = 1 
-	    #buf.append(filePath);
-	    #buf.append("\n");
-            #if len(buf) >= 1024:
-	        #sys.stdout.write(''.join(buf))
-		#buf = []
+	    buf.append(filePath);
+	    buf.append("\n");
+            if len(buf) >= 1024:
+	        sys.stdout.write(''.join(buf))
+		buf = []
 
 sys.stdout.write(''.join(buf));
