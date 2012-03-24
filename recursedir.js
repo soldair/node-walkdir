@@ -5,10 +5,11 @@ resolve = require('path').resolve;
 exports.find = exports.recurse = exports.recurseDir = recursedir;
 
 exports.findSync = exports.recurseSync = exports.recurseDirSync = function(file,options){
-  var options = options || {};
+  options = options || {};
   options.sync = true;
   return recursedir(file,options);
-}
+
+};
 
 function recursedir(path,options,cb){
   if(typeof options == 'function') {
@@ -77,11 +78,14 @@ function recursedir(path,options,cb){
     };
     
     if(options.sync) {
-      var stat,e;
+      var stat,ex;
       try{
         stat = fs.lstatSync(path);
-      } catch (e) { }
-      if(!stat && !e) console.log('failed to stat '+path);
+      } catch (e) {
+        ex = e;
+      }
+
+      if(!stat && !ex) console.log('failed to stat '+path);
       statAction(e,stat);
     } else {
         fs.lstat(path,statAction);
@@ -102,9 +106,9 @@ function recursedir(path,options,cb){
       if(path == '/') path='';
       for(var i=0,j=files.length;i<j;i++){
         statter(path+'/'+files[i]);
-      };
+      }
 
-    }
+    };
 
     //use same pattern for sync as async api
     if(options.sync) {
@@ -172,4 +176,4 @@ function recursedir(path,options,cb){
     return emitter;
   }
 
-};
+}
