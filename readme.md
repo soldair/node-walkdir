@@ -12,13 +12,13 @@ var recursedir = require('recursedir');
 
 //async with path callback 
 
-recursedir.find('../',function(path,stat){
+recursedir('../',function(path,stat){
   console.log('found: ',path);
 });
 
 //use async emitter to capture more events
 
-var emitter = recursedir.find('../');
+var emitter = recursedir('../');
 
 emitter.on('file',function(){
   console.log('file from emitter: ',file);
