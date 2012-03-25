@@ -2,28 +2,28 @@ var EventEmitter = require('events').EventEmitter,
 fs = require('fs'),
 _path = require('path');
 
-module.exports = recursedir;
+module.exports = walkdir;
 
-recursedir.find = recursedir.recurse = recursedir;
+walkdir.find = walkdir.walk = walkdir;
 
-recursedir.findSync = recursedir.recurseSync = function(file,options){
+walkdir.sync = function(file,options){
   options = options || {};
   options.sync = true;
-  return recursedir(file,options);
+  return walkdir(file,options);
 
 };
 
-function recursedir(path,options,cb){
-  if(typeof options == 'function') {
-    cb = options;
-  }
+function walkdir(path,options,cb){
+
+  if(typeof options == 'function') cb = options;
 
   options = options || {};
-  var emitter = new EventEmitter();
 
-  var allPaths = (options.return_object?{}:[]),
+  var emitter = new EventEmitter(),
+  allPaths = (options.return_object?{}:[]),
   resolved = false,
-  inos = {}, 
+  inos = {},
+  stop = 0,
   ended = 0, 
   jobs=0, 
   job = function(value) {
@@ -47,7 +47,8 @@ function recursedir(path,options,cb){
     job(1);
     var statAction = function(err,stat) {
       job(-1);
-      
+      if(stop) return;
+
       // in sync mode i found that node will sometimes return a null stat and no error =(
       // this is reproduceable in file descriptors that no longer exist from this process
       // after a readdir on /proc/3321/task/3321/ for example. Where 3321 is this pid
@@ -155,7 +156,6 @@ function recursedir(path,options,cb){
   if (options.sync) {
     if(!options.no_return){
       emitter.on('path',function(path,stat){
-        //save all paths?
         if(options.return_object) allPaths[path] = stat;
         else allPaths.push(path);
       });
@@ -177,6 +177,8 @@ function recursedir(path,options,cb){
   if (options.sync) {
     return allPaths;
   } else {
+    //support stopping everything.
+    emitter.end = emitter.stop = function(){stop = 1;};
     return emitter;
   }
 

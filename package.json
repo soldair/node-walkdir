@@ -1,7 +1,7 @@
 {
-  "name": "recursedir",
+  "name": "walkdir",
   "description": "",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Ryan Day <soldair@gmail.com>",
   "keywords": [
     "find",
@@ -10,11 +10,11 @@
     "files",
     "fs"
   ],
-  "main": "./recursedir.js",
-  "homepage": "http://github.com/soldair/node-recursedir",
+  "main": "./walkdir.js",
+  "homepage": "http://github.com/soldair/node-walkdir",
   "repository": {
     "type": "git",
-    "url": "git://github.com/soldair/node-recursedir.git"
+    "url": "git://github.com/soldair/node-walkdir.git"
   },
   "scripts": {
     "test": "./test.sh"

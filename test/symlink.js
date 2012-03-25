@@ -1,12 +1,12 @@
 var test = require('tap').test,
-recursedir = require('../recursedir.js');
+walkdir = require('../walkdir.js');
 
 
 test('follow symlinks',function(t){
 
   var links = [],paths = [],failures = [],errors = [];
 
-  var emitter = recursedir(__dirname+'/dir/symlinks/dir2',{follow_symlinks:true});
+  var emitter = walkdir(__dirname+'/dir/symlinks/dir2',{follow_symlinks:true});
 
   emitter.on('path',function(path,stat){
     paths.push(path);

@@ -1,5 +1,5 @@
 var test = require('tap').test,
-recursedir = require('../recursedir.js');
+walkdir = require('../walkdir.js');
 
 var expectedPaths = {
 'dir/foo/x':'file',
@@ -16,7 +16,7 @@ test('sync',function(t){
   files = [],
   dirs = [];
 
-  var pathResult = recursedir.findSync(__dirname+'/dir/foo',function(path){
+  var pathResult = walkdir.sync(__dirname+'/dir/foo',function(path){
     //console.log('path: ',path);
     paths.push(path);
   });
@@ -36,7 +36,7 @@ test('sync',function(t){
 
 test('sync return object',function(t){
 
-  var pathResult = recursedir.findSync(__dirname+'/dir/foo',{return_object:true});
+  var pathResult = walkdir.sync(__dirname+'/dir/foo',{return_object:true});
 
   t.ok(!(pathResult instanceof Array),'if return object is not specified should be an array');
 

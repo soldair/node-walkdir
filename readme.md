@@ -1,24 +1,24 @@
 [![Build Status](https://secure.travis-ci.org/soldair/node-recursedir.png)](http://travis-ci.org/soldair/node-recursedir)
 
-## recuredir
+## walkdir
 
-Recursively traverses a directory tree emitting events for the stuff it finds. Using only native flow control its faster than other find options in node and does not crash when you attempt to traverse a big tree.
+Walks a directory tree emitting events based on what it finds. Presents a familliar callback/emitter/sync interface. Walk a tree of any depth. This is a performant option any pull requests to make it more so will be talken into consderation.. 
 
 ## Example
 
 ```js
 
-var recursedir = require('recursedir');
+var walk = require('walkdir');
 
 //async with path callback 
 
-recursedir('../',function(path,stat){
+walk('../',function(path,stat){
   console.log('found: ',path);
 });
 
 //use async emitter to capture more events
 
-var emitter = recursedir('../');
+var emitter = walk('../');
 
 emitter.on('file',function(){
   console.log('file from emitter: ',file);
@@ -27,13 +27,13 @@ emitter.on('file',function(){
 
 //sync with callback
 
-recursedir.findSync('../',function(path,stat){
+walk.sync('../',function(path,stat){
   console.log('found sync:',path);
 });
 
 //sync just need paths
 
-var paths = recursedir.findSync('../');
+var paths = walk.sync('../');
 console.log('found paths sync: ',paths);
 
 ```
@@ -41,30 +41,30 @@ console.log('found paths sync: ',paths);
 
 ## install
 
-	npm install recursedir
+	npm install walkdir
 
 ## arguments
 
-recursedir.find(path, [options], [callback])
-recursedir.findSync(path, [options], [callback]);
+walkdir(path, [options], [callback])
+walkdir.sync(path, [options], [callback]);
 
 - path
   - the starting point of your directory walk
 
 - options. supported options are
 	- general
-	```js
-	{
-	"follow_symlinks":true, //defaults to the first reported stat.size
-	}
-	```
+		```js
+		{
+		"follow_symlinks":false, // default is off 
+		}
+		```
 	- sync only
-	```js
-	{
-	"no_return":false, // if true null will be returned and no array or object will be created with found paths. useful for large listings
-	"return_object":false, // if true the sync return will be in {path:stat} format instead of [path,path,...]
-	}
-	```
+		```js
+		{
+		"return_object":false, // if true the sync return will be in {path:stat} format instead of [path,path,...]
+		"no_return":false, // if true null will be returned and no array or object will be created with found paths. useful for large listings
+		}
+		```
 
 - callback
   - this is bound to the path event of the emitter. its optional in all cases.
@@ -75,7 +75,7 @@ recursedir.findSync(path, [options], [callback]);
 
 ## events
 
-all events are emitted with (path,stat). stat is an instanceof fs.Stats
+non error type events are emitted with (path,stat). stat is an instanceof fs.Stats
 
 ###path
 fired for everything
@@ -100,6 +100,8 @@ fired when a block device is found
 
 ###targetdirectory
 fired for the stat of the path you provided as the first argument. is is only fired if it is a directory.
+
+error type events are emitted with (path,error). error being the error object returned from an fs call or other opperation.
 
 ###error
 if the target path cannot be read an error event is emitted. this is the only failure case.

@@ -1,5 +1,5 @@
 var test = require('tap').test,
-recursedir = require('../recursedir.js');
+walkdir = require('../walkdir.js');
 
 var expectedPaths = {
 'dir/foo/x':'file',
@@ -17,7 +17,7 @@ test('async events',function(t){
   dirs = [];
 
 
-  var emitter = recursedir.find(__dirname+'/dir/foo',function(path){
+  var emitter = walkdir(__dirname+'/dir/foo',function(path){
     //console.log('path: ',path);
     paths.push(path.replace(__dirname+'/',''));
   });
