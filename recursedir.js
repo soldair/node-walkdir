@@ -1,10 +1,12 @@
 var EventEmitter = require('events').EventEmitter,
 fs = require('fs'),
-resolve = require('path').resolve;
+_path = require('path');
 
-exports.find = exports.recurse = exports.recurseDir = recursedir;
+module.exports = recursedir;
 
-exports.findSync = exports.recurseSync = exports.recurseDirSync = function(file,options){
+recursedir.find = recursedir.recurse = recursedir;
+
+recursedir.findSync = recursedir.recurseSync = function(file,options){
   options = options || {};
   options.sync = true;
   return recursedir(file,options);
@@ -24,7 +26,7 @@ function recursedir(path,options,cb){
   inos = {}, 
   ended = 0, 
   jobs=0, 
-  job = function(value){
+  job = function(value) {
     jobs += value;
     if(value < 1 && !tick) {
       tick = 1;
@@ -57,8 +59,8 @@ function recursedir(path,options,cb){
 
 
       //if i have evented this inode already dont again.
-      if(inos[stat.dev+stat.ino] && stat.ino) return;
-      inos[stat.dev+stat.ino] = 1;
+      if(inos[stat.dev+'-'+stat.ino] && stat.ino) return;
+      inos[stat.dev+'-'+stat.ino] = 1;
 
       if (first && stat.isDirectory()) {
         emitter.emit('targetdirectory',path,stat);
@@ -85,17 +87,15 @@ function recursedir(path,options,cb){
         ex = e;
       }
 
-      if(!stat && !ex) console.log('failed to stat '+path);
-      statAction(e,stat);
+      statAction(ex,stat);
     } else {
         fs.lstat(path,statAction);
     }
   },readdir = function(path,stat){
     if(!resolved) {
-      path = resolve(path);
+      path = _path.resolve(path);
       resolved = 1;
     }
-
     job(1);
     var readdirAction = function(err,files) {
       job(-1);
@@ -126,20 +126,24 @@ function recursedir(path,options,cb){
   if (options.follow_symlinks) {
     var linkAction = function(err,path){
       job(-1);
-      statter(resolve(path));
+      statter(path);
     };
 
     emitter.on('link',function(path,stat){
       job(1);
       if(options.sync) {
-        var resolvedPath,e;
+        var lpath,ex;
         try {
-          resolvedPath = fs.readlinkSync(path);
-        } catch(e) {}
-        linkAction(e,resolvedPath);
+          lpath = fs.readlinkSync(path);
+        } catch(e) {
+          ex = e;
+        }
+        linkAction(ex,_path.resolve(_path.dirname(path),lpath));
 
       } else {
-        fs.readlink(e,linkAction);
+        fs.readlink(path,function(err,lpath){
+          linkAction(err,_path.resolve(_path.dirname(path),lpath));
+        });
       }
     });
   }
