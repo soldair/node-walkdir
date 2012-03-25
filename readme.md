@@ -1,8 +1,8 @@
-[![Build Status](https://secure.travis-ci.org/soldair/node-recursedir.png)](http://travis-ci.org/soldair/node-recursedir)
+[![Build Status](https://secure.travis-ci.org/soldair/node-walkdir.png)](http://travis-ci.org/soldair/node-walkdir)
 
 ## walkdir
 
-Walks a directory tree emitting events based on what it finds. Presents a familliar callback/emitter/sync interface. Walk a tree of any depth. This is a performant option any pull requests to make it more so will be talken into consderation.. 
+Find files. Walks a directory tree emitting events based on what it finds. Presents a familliar callback/emitter/sync interface. Walk a tree of any depth. This is a performant option any pull requests to make it more so will be talken into consderation.. 
 
 ## Example
 
@@ -110,4 +110,26 @@ if the target path cannot be read an error event is emitted. this is the only fa
 when stat or read fails on a path somewhere in the walk and it is not your target path you get a fail event instead of error.
 This is handy if you want to find places you dont have access too.
 
+## notes
+
+### cancel a walk in progress
+  ```js
+  //cancel a walk in progress within callback.
+
+  var walk = require('walkdir');
+  walk('../',function(path,stat){
+    this.end();
+  });
+
+  //cancel a walk in progress with emitter handle
+  var walk = require('walkdir');
+  var emitter = walk('../');
+
+  doSomethingAsync(function(){
+	emitter.end();
+  })
+  ```
+
+## thanks
+thanks to substack. the interface for this module is based off of node-findit
 
