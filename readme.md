@@ -101,6 +101,7 @@ fired when a block device is found
 ###targetdirectory
 fired for the stat of the path you provided as the first argument. is is only fired if it is a directory.
 
+## error events
 error type events are emitted with (path,error). error being the error object returned from an fs call or other opperation.
 
 ###error
