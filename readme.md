@@ -52,19 +52,21 @@ walkdir.sync(path, [options], [callback]);
   - the starting point of your directory walk
 
 - options. supported options are
-	- general
-		```js
-		{
-		"follow_symlinks":false, // default is off 
-		}
-		```
-	- sync only
-		```js
-		{
-		"return_object":false, // if true the sync return will be in {path:stat} format instead of [path,path,...]
-		"no_return":false, // if true null will be returned and no array or object will be created with found paths. useful for large listings
-		}
-		```
+  - general
+  ```js
+  {
+  "follow_symlinks":false, // default is off 
+  "no_recurse":false,      // only recurse one level deep
+  "max_depth":undefined    // only recurse down to max_depth. if you need more than no_recurse
+  }
+  ```
+  - sync only
+  ```js
+  {
+  "return_object":false, // if true the sync return will be in {path:stat} format instead of [path,path,...]
+  "no_return":false, // if true null will be returned and no array or object will be created with found paths. useful for large listings
+  }
+  ```
 
 - callback
   - this is bound to the path event of the emitter. its optional in all cases.

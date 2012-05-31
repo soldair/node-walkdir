@@ -43,7 +43,7 @@ function walkdir(path,options,cb){
   //mapping is stat functions to event names.	
   var statIs = [['isFile','file'],['isDirectory','directory'],['isSymbolicLink','link'],['isSocket','socket'],['isFIFO','fifo'],['isBlockDevice','blockdevice'],['isCharacterDevice','characterdevice']];
 
-  var statter = function (path,first) {
+  var statter = function (path,first,depth) {
     job(1);
     var statAction = function(err,stat) {
       job(-1);
@@ -64,17 +64,17 @@ function walkdir(path,options,cb){
       inos[stat.dev+'-'+stat.ino] = 1;
 
       if (first && stat.isDirectory()) {
-        emitter.emit('targetdirectory',path,stat);
+        emitter.emit('targetdirectory',path,stat,depth);
         return;
       }
 
-      emitter.emit('path', path, stat);
+      emitter.emit('path', path, stat,depth);
 
       var i,name;
 
       for(var j=0,k=statIs.length;j<k;j++) {
         if(stat[statIs[j][0]]()) {
-          emitter.emit(statIs[j][1],path,stat);
+          emitter.emit(statIs[j][1],path,stat,depth);
           break;
         }
       }
@@ -92,11 +92,17 @@ function walkdir(path,options,cb){
     } else {
         fs.lstat(path,statAction);
     }
-  },readdir = function(path,stat){
+  },readdir = function(path,stat,depth){
     if(!resolved) {
       path = _path.resolve(path);
       resolved = 1;
     }
+
+    if(options.max_depth && depth >= options.max_depth){
+      emitter.emit('maxdepth',path,stat,depth);
+      return;
+    }
+
     job(1);
     var readdirAction = function(err,files) {
       job(-1);
@@ -106,7 +112,7 @@ function walkdir(path,options,cb){
       }
       if(path == '/') path='';
       for(var i=0,j=files.length;i<j;i++){
-        statter(path+'/'+files[i]);
+        statter(path+'/'+files[i],false,(depth||0)+1);
       }
 
     };
@@ -125,12 +131,12 @@ function walkdir(path,options,cb){
   };
 
   if (options.follow_symlinks) {
-    var linkAction = function(err,path){
+    var linkAction = function(err,path,depth){
       job(-1);
-      statter(path);
+      statter(path,false,depth);
     };
 
-    emitter.on('link',function(path,stat){
+    emitter.on('link',function(path,stat,depth){
       job(1);
       if(options.sync) {
         var lpath,ex;
@@ -139,11 +145,11 @@ function walkdir(path,options,cb){
         } catch(e) {
           ex = e;
         }
-        linkAction(ex,_path.resolve(_path.dirname(path),lpath));
+        linkAction(ex,_path.resolve(_path.dirname(path),lpath),depth);
 
       } else {
         fs.readlink(path,function(err,lpath){
-          linkAction(err,_path.resolve(_path.dirname(path),lpath));
+          linkAction(err,_path.resolve(_path.dirname(path),lpath),depth);
         });
       }
     });
