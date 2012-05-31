@@ -162,7 +162,9 @@ function walkdir(path,options,cb){
     }
   }
 
-  emitter.on('directory',readdir);
+  if (!options.no_recurse) {
+    emitter.on('directory',readdir);
+  }
   //directory that was specified by argument.
   emitter.once('targetdirectory',readdir);
   //only a fail on the path specified by argument is fatal 
