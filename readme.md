@@ -106,6 +106,9 @@ fired when a block device is found
 ###targetdirectory
 fired for the stat of the path you provided as the first argument. is is only fired if it is a directory.
 
+###end
+fired when the entire tree has been read and emitted.
+
 ## error events
 error type events are emitted with (path,error). error being the error object returned from an fs call or other opperation.
 
@@ -115,9 +118,6 @@ if the target path cannot be read an error event is emitted. this is the only fa
 ###fail
 when stat or read fails on a path somewhere in the walk and it is not your target path you get a fail event instead of error.
 This is handy if you want to find places you dont have access too.
-
-###end
-fired when the entire tree has been read and emitted.
 
 ## notes
 
