@@ -20,8 +20,8 @@ walk('../',function(path,stat){
 
 var emitter = walk('../');
 
-emitter.on('file',function(){
-  console.log('file from emitter: ',file);
+emitter.on('file',function(filename,stat){
+  console.log('file from emitter: ', filename);
 });
 
 
@@ -115,6 +115,9 @@ if the target path cannot be read an error event is emitted. this is the only fa
 ###fail
 when stat or read fails on a path somewhere in the walk and it is not your target path you get a fail event instead of error.
 This is handy if you want to find places you dont have access too.
+
+###end
+fired when the entire tree has been read and emitted.
 
 ## notes
 
