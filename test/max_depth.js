@@ -19,7 +19,7 @@ test('no_recurse option',function(t){
   emitter.on('end',function(){
      var expected = Object.keys(expectedPaths);
      paths.forEach(function(v){ 
-          t.ok(expected.indexOf(v) > -1,'paths shouyld not have any unexpected files');
+          t.ok(expected.indexOf(v) > -1,'paths should not have any unexpected files');
      });
 
      t.end();

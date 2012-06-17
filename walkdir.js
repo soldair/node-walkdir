@@ -107,9 +107,17 @@ function walkdir(path,options,cb){
     var readdirAction = function(err,files) {
       job(-1);
       if (err || !files) {
+        //permissions error or invalid files
         emitter.emit('fail',path,err);
         return;
       }
+
+      if(!files.length) {
+        // empty directory event.
+        emitter.emit('empty',path,stat,depth);
+        return;     
+      }
+
       if(path == '/') path='';
       for(var i=0,j=files.length;i<j;i++){
         statter(path+'/'+files[i],false,(depth||0)+1);
@@ -133,6 +141,7 @@ function walkdir(path,options,cb){
   if (options.follow_symlinks) {
     var linkAction = function(err,path,depth){
       job(-1);
+      //TODO fail event here on error?
       statter(path,false,depth);
     };
 
