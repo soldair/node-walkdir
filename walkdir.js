@@ -106,7 +106,7 @@ function walkdir(path,options,cb){
     job(1);
     var readdirAction = function(err,files) {
       job(-1);
-      if (err || !files || !files.length) {
+      if (err || !files) {
         emitter.emit('fail',path,err);
         return;
       }
