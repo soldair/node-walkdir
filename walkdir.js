@@ -141,7 +141,7 @@ function walkdir(path,options,cb){
   if (options.follow_symlinks) {
     var linkAction = function(err,path,depth){
       job(-1);
-      //TODO fail event here on error?
+      //TODO should fail event here on error?
       statter(path,false,depth);
     };
 

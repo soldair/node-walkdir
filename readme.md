@@ -88,8 +88,14 @@ fired for everything
 ###file
 fired only for regular files
 
+###directory
+fired only for directories
+
 ###link
 fired when a symbolic link is found
+
+###end
+fired when the entire tree has been read and emitted.
 
 ###socket
 fired when a socket descriptor is found
@@ -106,8 +112,8 @@ fired when a block device is found
 ###targetdirectory
 fired for the stat of the path you provided as the first argument. is is only fired if it is a directory.
 
-###end
-fired when the entire tree has been read and emitted.
+###empty
+fired for empty directory
 
 ## error events
 error type events are emitted with (path,error). error being the error object returned from an fs call or other opperation.
