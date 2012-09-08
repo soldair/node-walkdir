@@ -126,6 +126,16 @@ when stat or read fails on a path somewhere in the walk and it is not your targe
 This is handy if you want to find places you dont have access too.
 
 ## notes
+the async emitter returned supports 3 methods
+
+###end
+  stop a walk in progress
+
+###pause
+  pause the walk. no more events will be emitted until resume
+
+###resume
+  resume the walk
 
 ### cancel a walk in progress
   ```js

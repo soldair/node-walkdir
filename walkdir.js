@@ -24,6 +24,7 @@ function walkdir(path,options,cb){
   resolved = false,
   inos = {},
   stop = 0,
+  pause = null,
   ended = 0, 
   jobs=0, 
   job = function(value) {
@@ -32,6 +33,7 @@ function walkdir(path,options,cb){
       tick = 1;
       process.nextTick(function(){
         tick = 0;
+        console.log('jobs: ',jobs);
         if(jobs <= 0 && !ended) {
           ended = 1;
           emitter.emit('end');
@@ -45,7 +47,8 @@ function walkdir(path,options,cb){
 
   var statter = function (path,first,depth) {
     job(1);
-    var statAction = function(err,stat) {
+    var statAction = function fn(err,stat,data) {
+
       job(-1);
       if(stop) return;
 
@@ -184,10 +187,10 @@ function walkdir(path,options,cb){
   emitter.once('targetdirectory',readdir);
   //only a fail on the path specified by argument is fatal 
   emitter.once('fail',function(_path,err){
-        //if the first dir fails its a real error
-        if(path == _path) {
-          emitter.emit('error',path,err);
-        }
+    //if the first dir fails its a real error
+    if(path == _path) {
+      emitter.emit('error',path,err);
+    }
   });
 
   statter(path,1);
@@ -196,6 +199,31 @@ function walkdir(path,options,cb){
   } else {
     //support stopping everything.
     emitter.end = emitter.stop = function(){stop = 1;};
+    //support pausing everything
+    var origEmit = emitter.emit;
+    var emitQ = [];
+    emitter.pause = function(){
+      job(1);
+      pause = true;
+      emitter.emit = function(){
+        emitQ.push(arguments);
+      };
+    };
+    // support getting the show going again
+    emitter.resume = function(){
+
+      if(!pause) return;
+      pause = false;
+      job(-1);
+
+      //drain emitQ
+      emitter.emit = origEmit;
+      while(emitQ.length) {
+        emitter.emit.apply(emitter,emitQ.shift());
+      }
+
+    };
+
     return emitter;
   }
 
