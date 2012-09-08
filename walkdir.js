@@ -200,28 +200,31 @@ function walkdir(path,options,cb){
     //support stopping everything.
     emitter.end = emitter.stop = function(){stop = 1;};
     //support pausing everything
-    var origEmit = emitter.emit;
     var emitQ = [];
     emitter.pause = function(){
+      console.log('pause');
       job(1);
       pause = true;
       emitter.emit = function(){
+        console.log(pause,' overloaded emit! ',arguments[0],arguments[1]);
         emitQ.push(arguments);
       };
     };
     // support getting the show going again
     emitter.resume = function(){
-
       if(!pause) return;
       pause = false;
+      // not pending
       job(-1);
-
-      //drain emitQ
-      emitter.emit = origEmit;
-      while(emitQ.length) {
-        emitter.emit.apply(emitter,emitQ.shift());
+      //replace emit
+      emitter.emit = EventEmitter.prototype.emit;
+      // local ref
+      var q = emitQ;
+      // clear ref to prevent infinite loops
+      emitQ = [];
+      while(q.length) {
+        emitter.emit.apply(emitter,q.shift());
       }
-
     };
 
     return emitter;
