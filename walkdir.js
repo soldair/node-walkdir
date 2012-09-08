@@ -33,7 +33,6 @@ function walkdir(path,options,cb){
       tick = 1;
       process.nextTick(function(){
         tick = 0;
-        console.log('jobs: ',jobs);
         if(jobs <= 0 && !ended) {
           ended = 1;
           emitter.emit('end');
@@ -202,11 +201,9 @@ function walkdir(path,options,cb){
     //support pausing everything
     var emitQ = [];
     emitter.pause = function(){
-      console.log('pause');
       job(1);
       pause = true;
       emitter.emit = function(){
-        console.log(pause,' overloaded emit! ',arguments[0],arguments[1]);
         emitQ.push(arguments);
       };
     };
