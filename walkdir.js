@@ -9,8 +9,8 @@ walkdir.find = walkdir.walk = walkdir;
 walkdir.sync = function(file,options){
   options = options || {};
   options.sync = true;
+  options.max_depth = options.max_depth || Infinity;
   return walkdir(file,options);
-
 };
 
 function walkdir(path,options,cb){
@@ -42,7 +42,8 @@ function walkdir(path,options,cb){
   }, tick = 0;
 
   //mapping is stat functions to event names.	
-  var statIs = [['isFile','file'],['isDirectory','directory'],['isSymbolicLink','link'],['isSocket','socket'],['isFIFO','fifo'],['isBlockDevice','blockdevice'],['isCharacterDevice','characterdevice']];
+  var statIs = [['isFile','file'],['isDirectory','directory'],['isSymbolicLink','link'],['isSocket','socket'],['isFIFO','fifo'],['isBlockDevice','blockdevice'],['isCharacterDevice','characterdevice']],
+      statLength = statIs.length;
 
   var statter = function (path,first,depth) {
     job(1);
@@ -56,25 +57,23 @@ function walkdir(path,options,cb){
       // after a readdir on /proc/3321/task/3321/ for example. Where 3321 is this pid
       // node @ v0.6.10 
       if(err || !stat) { 
-        emitter.emit('fail',path,err);
-        return;
+        return emitter.emit('fail',path,err);
       }
 
 
       //if i have evented this inode already dont again.
-      if(inos[stat.dev+'-'+stat.ino] && stat.ino) return;
-      inos[stat.dev+'-'+stat.ino] = 1;
+      if(inos[stat.dev+stat.ino] && stat.ino) return;
+      inos[stat.dev+stat.ino] = 1;
 
       if (first && stat.isDirectory()) {
-        emitter.emit('targetdirectory',path,stat,depth);
-        return;
+        return emitter.emit('targetdirectory',path,stat,depth);
       }
 
       emitter.emit('path', path, stat,depth);
 
       var i,name;
 
-      for(var j=0,k=statIs.length;j<k;j++) {
+      for(var j=0;j<statLength;j++) {
         if(stat[statIs[j][0]]()) {
           emitter.emit(statIs[j][1],path,stat,depth);
           break;
@@ -100,9 +99,8 @@ function walkdir(path,options,cb){
       resolved = 1;
     }
 
-    if(options.max_depth && depth >= options.max_depth){
-      emitter.emit('maxdepth',path,stat,depth);
-      return;
+    if(depth >= options.max_depth){
+      return emitter.emit('maxdepth',path,stat,depth);
     }
 
     job(1);
@@ -110,21 +108,20 @@ function walkdir(path,options,cb){
       job(-1);
       if (err || !files) {
         //permissions error or invalid files
-        emitter.emit('fail',path,err);
-        return;
+        return emitter.emit('fail',path,err);
       }
 
-      if(!files.length) {
+      var fileNum;
+      if( !(fileNum = files.length) ) {
         // empty directory event.
-        emitter.emit('empty',path,stat,depth);
-        return;     
+        return emitter.emit('empty',path,stat,depth);;
       }
 
       if(path == '/') path='';
-      for(var i=0,j=files.length;i<j;i++){
-        statter(path+'/'+files[i],false,(depth||0)+1);
+      var i = 0, d = depth || i;
+      while (i < fileNum) {
+        statter(path+"/"+files[i++],false,d+1);
       }
-
     };
 
     //use same pattern for sync as async api
