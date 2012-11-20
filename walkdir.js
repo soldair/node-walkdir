@@ -6,10 +6,11 @@ module.exports = walkdir;
 
 walkdir.find = walkdir.walk = walkdir;
 
-walkdir.sync = function(file,options){
+walkdir.sync = function(path,options,cb){
+  if(typeof options == 'function') cb = options;
   options = options || {};
   options.sync = true;
-  return walkdir(file,options);
+  return walkdir(path,options,cb);
 
 };
 
