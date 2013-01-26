@@ -22,12 +22,14 @@ function walkdir(path,options,cb){
 
   var emitter = new EventEmitter(),
   allPaths = (options.return_object?{}:[]),
+  ignorePaths = {},
+  rootPath = path,
   resolved = false,
   inos = {},
   stop = 0,
   pause = null,
-  ended = 0, 
-  jobs=0, 
+  ended = 0,
+  jobs=0,
   job = function(value) {
     jobs += value;
     if(value < 1 && !tick) {
@@ -42,7 +44,21 @@ function walkdir(path,options,cb){
     }
   }, tick = 0;
 
-  //mapping is stat functions to event names.	
+  if(options.ignore_paths) {
+      for(var i=0; i < options.ignore_paths.length; i++) {
+          ignorePaths[options.ignore_paths[i]] = true;
+      }
+  }
+
+  function testIgnore(path) {
+    if(ignorePaths[path] && path[0] == "/")
+      return true;
+    if(ignorePaths[path.substr(rootPath.length+1, path.length)])
+      return true;
+    return false;
+  }
+
+  //mapping is stat functions to event names.
   var statIs = [['isFile','file'],['isDirectory','directory'],['isSymbolicLink','link'],['isSocket','socket'],['isFIFO','fifo'],['isBlockDevice','blockdevice'],['isCharacterDevice','characterdevice']];
 
   var statter = function (path,first,depth) {
@@ -55,8 +71,8 @@ function walkdir(path,options,cb){
       // in sync mode i found that node will sometimes return a null stat and no error =(
       // this is reproduceable in file descriptors that no longer exist from this process
       // after a readdir on /proc/3321/task/3321/ for example. Where 3321 is this pid
-      // node @ v0.6.10 
-      if(err || !stat) { 
+      // node @ v0.6.10
+      if(err || !stat) {
         emitter.emit('fail',path,err);
         return;
       }
@@ -82,7 +98,7 @@ function walkdir(path,options,cb){
         }
       }
     };
-    
+
     if(options.sync) {
       var stat,ex;
       try{
@@ -105,6 +121,10 @@ function walkdir(path,options,cb){
       emitter.emit('maxdepth',path,stat,depth);
       return;
     }
+    if(testIgnore(path)) {
+      emitter.emit('ignorepath', path);
+      return;
+    }
 
     job(1);
     var readdirAction = function(err,files) {
@@ -118,12 +138,17 @@ function walkdir(path,options,cb){
       if(!files.length) {
         // empty directory event.
         emitter.emit('empty',path,stat,depth);
-        return;     
+        return;
       }
 
       if(path == '/') path='';
       for(var i=0,j=files.length;i<j;i++){
-        statter(path+'/'+files[i],false,(depth||0)+1);
+        var npath = path+'/'+files[i];
+        if(testIgnore(npath)) {
+          emitter.emit('ignorepath', npath);
+        } else {
+            statter(npath,false,(depth||0)+1);
+        }
       }
 
     };
@@ -133,7 +158,7 @@ function walkdir(path,options,cb){
       var e,files;
       try {
           files = fs.readdirSync(path);
-      } catch (e) { }
+      } catch (e2) { }
 
       readdirAction(e,files);
     } else {
@@ -185,15 +210,31 @@ function walkdir(path,options,cb){
   }
   //directory that was specified by argument.
   emitter.once('targetdirectory',readdir);
-  //only a fail on the path specified by argument is fatal 
+  //only a fail on the path specified by argument is fatal
   emitter.once('fail',function(_path,err){
     //if the first dir fails its a real error
     if(path == _path) {
       emitter.emit('error',path,err);
     }
   });
+  if (options.ignore_mounts) {
+    fs.readFile("/proc/mounts", function(err, data) {
+      if(err)
+          return statter(path,1);
 
-  statter(path,1);
+      mounts = data.toString().split("\n");
+
+      for(var i=0; i < mounts.length; i++) {
+        var chunks = mounts[i].split(" ");
+        if(chunks.length > 1 && chunks[1] != path && chunks[1].length > 1)
+            ignorePaths[chunks[1]] = true;
+      }
+
+      statter(path,1);
+    });
+  } else {
+    statter(path,1);
+  }
   if (options.sync) {
     return allPaths;
   } else {

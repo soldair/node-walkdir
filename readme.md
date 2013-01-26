@@ -1,8 +1,8 @@
 [![Build Status](https://secure.travis-ci.org/soldair/node-walkdir.png)](http://travis-ci.org/soldair/node-walkdir)
- 
+
 ## walkdir
 
-Find files. Walks a directory tree emitting events based on what it finds. Presents a familliar callback/emitter/sync interface. Walk a tree of any depth. This is a performant option any pull requests to make it more so will be talken into consderation.. 
+Find files. Walks a directory tree emitting events based on what it finds. Presents a familliar callback/emitter/sync interface. Walk a tree of any depth. This is a performant option any pull requests to make it more so will be talken into consderation..
 
 ## Example
 
@@ -10,7 +10,7 @@ Find files. Walks a directory tree emitting events based on what it finds. Prese
 
 var walk = require('walkdir');
 
-//async with path callback 
+//async with path callback
 
 walk('../',function(path,stat){
   console.log('found: ',path);
@@ -56,9 +56,11 @@ walkdir.sync(path, [options], [callback]);
 
 	```js
 	{
-	"follow_symlinks":false, // default is off 
+	"follow_symlinks":false, // default is off
 	"no_recurse":false,      // only recurse one level deep
-	"max_depth":undefined    // only recurse down to max_depth. if you need more than no_recurse
+	"max_depth":undefined,   // only recurse down to max_depth. if you need more than no_recurse
+	"ignore_path": [],       // paths, relative or obsolute to ignore_path
+	"ignore_mounts": false   // only walk one mountpoint
 	}
 	```
 
