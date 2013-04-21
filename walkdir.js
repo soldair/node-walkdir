@@ -1,6 +1,8 @@
 var EventEmitter = require('events').EventEmitter,
 fs = require('fs'),
-_path = require('path');
+_path = require('path'),
+sep = _path.sep||'/';// 0.6.x
+
 
 module.exports = walkdir;
 
@@ -121,9 +123,9 @@ function walkdir(path,options,cb){
         return;     
       }
 
-      if(path == _path.sep) path='';
+      if(path == sep) path='';
       for(var i=0,j=files.length;i<j;i++){
-        statter(path+_path.sep+files[i],false,(depth||0)+1);
+        statter(path+sep+files[i],false,(depth||0)+1);
       }
 
     };
