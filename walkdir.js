@@ -121,9 +121,9 @@ function walkdir(path,options,cb){
         return;     
       }
 
-      if(path == _path.sep) path='';
+      if(_path.basename(path).length == 0) path='';
       for(var i=0,j=files.length;i<j;i++){
-        statter(path+_path.sep+files[i],false,(depth||0)+1);
+        statter(_path.join(path, files[i]),false,(depth||0)+1);
       }
 
     };
