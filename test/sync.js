@@ -17,7 +17,7 @@ test('sync',function(t){
   dirs = [];
 
   var pathResult = walkdir.sync(__dirname+'/dir/foo',function(path){
-    //console.log('path: ',path);
+    console.log('path: ',path);
     paths.push(path);
   });
 
@@ -25,7 +25,9 @@ test('sync',function(t){
 
   t.equals(Object.keys(expectedPaths).length,paths.length,'should have found the same number of paths as expected');
 
+
   Object.keys(expectedPaths).forEach(function(v,k){
+
       t.ok(paths.indexOf(__dirname+'/'+v) > -1,v+' should be found');
   });
 
