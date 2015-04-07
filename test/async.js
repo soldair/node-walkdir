@@ -37,7 +37,11 @@ test('async events',function(t){
        t.equals(expectedPaths[v],'file','path from file event should be file');  
      });
 
-     Object.keys(expectedPaths).forEach(function(v,k){
+     var expected = Object.keys(expectedPaths);
+
+     t.ok(expected.length == paths.length, 'expected and emitted paths should have the same length');
+
+     expected.forEach(function(v,k){
        if(expectedPaths[v] == 'file') {
           t.ok(files.indexOf(v) > -1,'should have file in files array');
        }
@@ -47,13 +51,13 @@ test('async events',function(t){
        t.equals(expectedPaths[v],'dir','path from dir event should be dir '+v);  
      });
 
-     Object.keys(expectedPaths).forEach(function(v,k){
+     expected.forEach(function(v,k){
        if(expectedPaths[v] == 'dir') {
           t.ok(dirs.indexOf(v) > -1,'should have dir in dirs array');
        }
      });
 
-     Object.keys(expectedPaths).forEach(function(v,k){
+     expected.forEach(function(v,k){
        t.ok(paths.indexOf(v) !== -1,'should have found all expected paths '+v);
      });
 

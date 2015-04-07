@@ -1,5 +1,5 @@
 var EventEmitter = require('events').EventEmitter,
-fs = require('fs'),
+_fs = require('fs'),
 _path = require('path'),
 sep = _path.sep||'/';// 0.6.x
 
@@ -21,6 +21,8 @@ function walkdir(path,options,cb){
   if(typeof options == 'function') cb = options;
 
   options = options || {};
+  
+  var fs = options.fs || _fs;
 
   var emitter = new EventEmitter(),
   allPaths = (options.return_object?{}:[]),

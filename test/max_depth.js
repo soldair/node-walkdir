@@ -18,6 +18,9 @@ test('no_recurse option',function(t){
 
   emitter.on('end',function(){
      var expected = Object.keys(expectedPaths);
+
+     t.ok(expected.length == paths.length, 'expected and emitted paths should have the same length');
+
      paths.forEach(function(v){ 
           t.ok(expected.indexOf(v) > -1,'paths should not have any unexpected files');
      });
