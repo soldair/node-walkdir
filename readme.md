@@ -137,6 +137,19 @@ the async emitter returned supports 3 methods
 ###resume
   resume the walk
 
+### ignore(path or array of paths)
+  will not traverse these directories. may be called in the path event handler to ignore dynamically. 
+  ```js
+  var walk = require('walkdir');
+  var p = require('path');
+  walk('/',function(path,stat){
+    // ignore all .git directories.
+    if(p.basename(path) === '.git') {
+      this.ignore(path)
+    }
+  })
+  ```
+
 ### cancel a walk in progress
   ```js
   //cancel a walk in progress within callback.

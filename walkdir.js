@@ -25,6 +25,7 @@ function walkdir(path,options,cb){
   var fs = options.fs || _fs;
 
   var emitter = new EventEmitter(),
+  dontTraverse = [],
   allPaths = (options.return_object?{}:[]),
   resolved = false,
   inos = {},
@@ -45,6 +46,12 @@ function walkdir(path,options,cb){
       });
     }
   }, tick = 0;
+
+  emitter.ignore = function(path){
+    if(Array.isArray(path)) dontTraverse.push.apply(dontTraverse,path)
+    else dontTraverse.push(path)
+    return this
+  }
 
   //mapping is stat functions to event names.	
   var statIs = [['isFile','file'],['isDirectory','directory'],['isSymbolicLink','link'],['isSocket','socket'],['isFIFO','fifo'],['isBlockDevice','blockdevice'],['isCharacterDevice','characterdevice']];
@@ -110,6 +117,15 @@ function walkdir(path,options,cb){
       return;
     }
 
+    if(dontTraverse.length){
+      for(var i=0;i<dontTraverse.length;++i){
+        if(dontTraverse[i] == path) {
+          dontTraverse.splice(i,1)
+          return;
+        }
+      }
+    }
+
     job(1);
     var readdirAction = function(err,files) {
       job(-1);
@@ -131,6 +147,7 @@ function walkdir(path,options,cb){
       }
 
     };
+
 
     //use same pattern for sync as async api
     if(options.sync) {
