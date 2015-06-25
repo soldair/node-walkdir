@@ -1,4 +1,4 @@
-var test = require('tap').test,
+var test = require('tape'),
 walk  = require('../walkdir.js');
 
 test('should be able to end walk after first path',function(t){

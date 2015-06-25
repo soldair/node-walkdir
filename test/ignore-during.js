@@ -1,4 +1,4 @@
-var test = require('tap').test
+var test = require('tape')
 var walkdir = require('../')
 
 test('async events',function(t){
@@ -12,7 +12,7 @@ test('async events',function(t){
   })
 
   emitter.on('end',function(){
-    t.equals(paths.join('|'),'dir/foo/a|dir/foo/x','should have ignored under a');
+    t.equals(paths.sort().join('|'),'dir/foo/a|dir/foo/x','should have ignored under a');
     t.end();
   })
 

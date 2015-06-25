@@ -17,16 +17,16 @@
     "url": "git://github.com/soldair/node-walkdir.git"
   },
   "scripts": {
-    "test": "./test.sh"
+    "test": "tape test/*.js"
   },
   "devDependencies": {
-    "tap": "*"
+    "tape": "^4.0.0"
   },
   "engines": {
     "node": ">=0.6.0"
   },
-  "license" : "MIT",
-  "contributors":[
-	"tjfontaine"
+  "license": "MIT",
+  "contributors": [
+    "tjfontaine"
   ]
 }

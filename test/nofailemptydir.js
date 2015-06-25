@@ -1,4 +1,4 @@
-var test = require('tap').test,
+var test = require('tape'),
 fs = require('fs'),
 path = require('path'),
 walk  = require('../walkdir.js');

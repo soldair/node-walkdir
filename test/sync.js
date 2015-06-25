@@ -1,4 +1,4 @@
-var test = require('tap').test,
+var test = require('tape'),
 walkdir = require('../walkdir.js');
 
 var expectedPaths = {
@@ -31,7 +31,7 @@ test('sync',function(t){
       t.ok(paths.indexOf(__dirname+'/'+v) > -1,v+' should be found');
   });
 
-  t.equivalent(paths,pathResult,'paths should be equal to pathResult');
+  t.deepEquals(paths,pathResult,'paths should be equal to pathResult');
 
   t.end();
 });
