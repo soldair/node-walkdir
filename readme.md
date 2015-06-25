@@ -171,3 +171,6 @@ the async emitter returned supports 3 methods
 ## thanks
 thanks to substack. the interface for this module is based off of node-findit
 
+## contributing
+see `CONTRIBUTING.md` for guidelines. this is an open opensource project.
+
