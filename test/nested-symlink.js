@@ -1,5 +1,5 @@
-var test = require('tape'),
-var walkdir = require('../walkdir.js');
+var test = require('tape')
+var walkdir = require('../walkdir.js')
 var basename = require('path').basename
 
 test('follow symlinks',function(t){
