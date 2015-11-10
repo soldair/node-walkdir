@@ -35,7 +35,7 @@ test('follow symlinks',function(t){
     t.equal(basename(files[0]),'found-me','found the nested symlink')
     t.equal(paths.length,3,'should find 3 things')
 
-    t.ok(!failues.length,'no failures')
+    t.ok(!failures.length,'no failures')
 
     t.end();
 
