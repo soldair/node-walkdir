@@ -12,29 +12,29 @@ var walk = require('walkdir');
 
 //async with path callback 
 
-walk('../',function(path,stat){
-  console.log('found: ',path);
+walk('../', function(path, stat) {
+  console.log('found: ', path);
 });
 
 //use async emitter to capture more events
 
 var emitter = walk('../');
 
-emitter.on('file',function(filename,stat){
+emitter.on('file', function(filename, stat) {
   console.log('file from emitter: ', filename);
 });
 
 
 //sync with callback
 
-walk.sync('../',function(path,stat){
-  console.log('found sync:',path);
+walk.sync('../', function(path, stat) {
+  console.log('found sync:', path);
 });
 
 //sync just need paths
 
 var paths = walk.sync('../');
-console.log('found paths sync: ',paths);
+console.log('found paths sync: ', paths);
 
 ```
 
@@ -56,9 +56,9 @@ walkdir.sync(path, [options], [callback]);
 
 	```js
 	{
-	"follow_symlinks":false, // default is off 
-	"no_recurse":false,      // only recurse one level deep
-	"max_depth":undefined    // only recurse down to max_depth. if you need more than no_recurse
+	  "follow_symlinks": false, // default is off 
+	  "no_recurse": false,      // only recurse one level deep
+	  "max_depth": undefined    // only recurse down to max_depth. if you need more than no_recurse
 	}
 	```
 
@@ -66,8 +66,8 @@ walkdir.sync(path, [options], [callback]);
 
 	```js
 	{
-	"return_object":false, // if true the sync return will be in {path:stat} format instead of [path,path,...]
-	"no_return":false, // if true null will be returned and no array or object will be created with found paths. useful for large listings
+	  "return_object": false, // if true the sync return will be in {path:stat} format instead of [path,path,...]
+	  "no_return": false, // if true null will be returned and no array or object will be created with found paths. useful for large listings
 	}
 	```
 
@@ -75,7 +75,7 @@ walkdir.sync(path, [options], [callback]);
   - this is bound to the path event of the emitter. its optional in all cases.
 
 	```js
-	callback(path,stat)
+	callback(path, stat)
 	```
 
 ## events
@@ -142,9 +142,9 @@ the async emitter returned supports 3 methods
   ```js
   var walk = require('walkdir');
   var p = require('path');
-  walk('/',function(path,stat){
+  walk('/', function(path, stat) {
     // ignore all .git directories.
-    if(p.basename(path) === '.git') {
+    if (p.basename(path) === '.git') {
       this.ignore(path)
     }
   })
@@ -155,7 +155,7 @@ the async emitter returned supports 3 methods
   //cancel a walk in progress within callback.
 
   var walk = require('walkdir');
-  walk('../',function(path,stat){
+  walk('../', function(path, stat) {
     this.end();
   });
 
@@ -163,8 +163,8 @@ the async emitter returned supports 3 methods
   var walk = require('walkdir');
   var emitter = walk('../');
 
-  doSomethingAsync(function(){
-	emitter.end();
+  doSomethingAsync(function() {
+    emitter.end();
   })
   ```
 
