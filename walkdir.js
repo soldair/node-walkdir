@@ -76,8 +76,10 @@ function walkdir(path,options,cb){
       //if i have evented this inode already dont again.
       var fileName = _path.basename(path);
       var fileKey = stat.dev + '-' + stat.ino + '-' + fileName;
-      if(inos[fileKey] && stat.ino) return;
-      inos[fileKey] = 1;
+      if(options.track_inodes !== false) {
+        if(inos[fileKey] && stat.ino) return;
+        inos[fileKey] = 1;
+      }
 
       if (first && stat.isDirectory()) {
         emitter.emit('targetdirectory',path,stat,depth);

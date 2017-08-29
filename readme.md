@@ -59,6 +59,8 @@ walkdir.sync(path, [options], [callback]);
 	  "follow_symlinks": false, // default is off 
 	  "no_recurse": false,      // only recurse one level deep
 	  "max_depth": undefined    // only recurse down to max_depth. if you need more than no_recurse
+          "track_inodes": true      // on windows or with hardlinks some files are not emitted due to inode collision. 
+          // ^ should be used with max_depth to prevent infinite loop
 	}
 	```
 
