@@ -1,5 +1,4 @@
 declare module 'walkdir' {
-  import { EventEmitter } from 'events';
   import { Stats } from 'fs';
 
   interface WalkerOptions {
