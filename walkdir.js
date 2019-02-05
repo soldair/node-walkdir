@@ -8,13 +8,39 @@ module.exports = walkdir;
 
 walkdir.find = walkdir.walk = walkdir;
 
-walkdir.sync = function(path,options,cb){
+walkdir.sync = function(path,options,eventHandler){
   if(typeof options == 'function') cb = options;
   options = options || {};
   options.sync = true;
-  return walkdir(path,options,cb);
-
+  return walkdir(path,options,eventHandler);
 };
+
+// return promise.
+walkdir.async = function(path,options,eventHandler){
+  return new Promise((resolve,reject)=>{
+    if(typeof options == 'function') cb = options;
+    options = options || {};
+
+    let emitter = walkdir(path,options,eventHandler)
+
+    emitter.on('error',reject)
+    emitter.on('fail',(path,err)=>{
+      err.message = 'Error walking": '+path+' '+err.message
+      if(err) reject(err)
+    })
+
+    let allPaths = {}
+    emitter.on('path',(path,stat)=>{
+      if(options.no_return !== true) allPaths[path] = stat;
+    })
+    emitter.on('end',()=>{
+      if(options.no_return !== true){
+        return resolve(options.return_object?allPaths:Object.keys(allPaths))
+      }
+      resolve()
+    })
+  })
+}
 
 function walkdir(path,options,cb){
 
@@ -86,7 +112,7 @@ function walkdir(path,options,cb){
         return;
       }
 
-      emitter.emit('path', path, stat,depth);
+      emitter.emit('path', path, stat, depth);
 
       var i,name;
 

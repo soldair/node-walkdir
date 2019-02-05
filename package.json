@@ -17,10 +17,13 @@
     "url": "git://github.com/soldair/node-walkdir.git"
   },
   "scripts": {
-    "test": "tape test/*.js"
+    "test": "tape test/*.js && npm run ts",
+    "ts": "npx tsc --noEmit test.ts"
   },
   "devDependencies": {
-    "tape": "^4.0.0"
+    "@types/node": "^10.12.21",
+    "tape": "^4.0.0",
+    "typescript": "^3.3.1"
   },
   "engines": {
     "node": ">=6.0.0"

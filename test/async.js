@@ -1,5 +1,6 @@
-var test = require('tape'),
-walkdir = require('../walkdir.js');
+var test = require('tape');
+var walkdir = require('../walkdir.js');
+var path = require('path');
 
 var expectedPaths = {
 'dir/foo/x':'file',
@@ -11,56 +12,22 @@ var expectedPaths = {
 'dir/foo/a/b/c/w':'file'
 };
 
-test('async events',function(t){
-  var paths = [],
-  files = [],
-  dirs = [];
 
+test("can use async method with promise",(t)=>{
+  if(typeof Promise === 'undefined'){
+    console.log('cannot use async promise returning methods in runtime without Promise')
+    return t.end()
+  }
 
-  var emitter = walkdir(__dirname+'/dir/foo',function(path){
-    //console.log('path: ',path);
-    paths.push(path.replace(__dirname+'/',''));
-  });
+  var p = walkdir.async(path.join(__dirname,'dir'))
 
-  emitter.on('directory',function(path,stat){
-    dirs.push(path.replace(__dirname+'/',''));
-  });
-
-  emitter.on('file',function(path,stat){
-    //console.log('file: ',path); 
-    files.push(path.replace(__dirname+'/',''));
-  });
-
-  emitter.on('end',function(){
-
-     files.forEach(function(v,k){
-       t.equals(expectedPaths[v],'file','path from file event should be file');  
-     });
-
-     var expected = Object.keys(expectedPaths);
-
-     t.ok(expected.length == paths.length, 'expected and emitted paths should have the same length');
-
-     expected.forEach(function(v,k){
-       if(expectedPaths[v] == 'file') {
-          t.ok(files.indexOf(v) > -1,'should have file in files array');
-       }
-     });
-
-     dirs.forEach(function(v,k){
-       t.equals(expectedPaths[v],'dir','path from dir event should be dir '+v);  
-     });
-
-     expected.forEach(function(v,k){
-       if(expectedPaths[v] == 'dir') {
-          t.ok(dirs.indexOf(v) > -1,'should have dir in dirs array');
-       }
-     });
-
-     expected.forEach(function(v,k){
-       t.ok(paths.indexOf(v) !== -1,'should have found all expected paths '+v);
-     });
-
-     t.end();
-  });
-});
+  p.then(function(result){
+    result = result.map(function(p){
+      return p.replace(__dirname,'')
+    })
+    t.ok(result.indexOf('/dir/symlinks/dir1/dangling-symlink') > -1,'should be a list of found files and have found one in particular')
+    t.end()
+  }).catch(function(e){
+    t.fail(e);
+  })
+})

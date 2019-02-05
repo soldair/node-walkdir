@@ -36,6 +36,10 @@ walk.sync('../', function(path, stat) {
 var paths = walk.sync('../');
 console.log('found paths sync: ', paths);
 
+// async await/promise!
+let result = await walk.async('../',{return_object:true})
+//result['path'] = {statObject}
+
 ```
 
 
@@ -64,7 +68,7 @@ walkdir.sync(path, [options], [callback]);
 	}
 	```
 
-  - sync only
+  - walkdir.sync/walkdir.async only
 
 	```js
 	{
