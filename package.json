@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "tape test/*.js && npm run ts",
-    "ts": "npx tsc --noEmit test.ts"
+    "ts": "tsc --noEmit test.ts"
   },
   "devDependencies": {
     "@types/node": "^10.12.21",
