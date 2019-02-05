@@ -12,6 +12,10 @@ b.splice(0)
 
 let c = walkdir('bbb')
 c.emit('a')
+c.pause()
+c.resume()
+c.end()
+
 
 let d = walkdir('ccc',{},(path)=>{
     path.substr

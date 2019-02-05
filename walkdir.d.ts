@@ -70,7 +70,11 @@ declare namespace walkdir {
         "no_return"?: boolean, // if true null will be returned and no array or object will be created with found paths. useful for large listings
     }
 
-    export type WalkEmitter = EventEmitter&{
+  export type WalkEmitter = EventEmitter&{
+        /**
+         * cancel a walk in progress 
+         */
+        end():void
         /**
          * pause the walk
          */
