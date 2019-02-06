@@ -1,3 +1,9 @@
+### v0.2.0
+added new option "filter". this allows you to filter a directory listing before statting anything. 
+the goal being to enable efficient ignore file application.
+
+documented fs option. we've had an fs option for a while so folks could provide custom fs implementations but now its documented in the readme.
+
 ### v0.1.1
 added missing emitter.end to typescript types and updayibng test to include custom emitter methods
 
