@@ -172,6 +172,25 @@ function walkdir(path,options,cb){
       }
 
       if(path == sep) path='';
+      if(options.filter){
+        var res = options.filter(path,files)
+        if(!res){
+          throw new Error('option.filter funtion must return a array of strings or a promise')
+        }
+        // support filters that return a promise
+        if(res.then){
+          job(1)
+          res.then((files)=>{
+            job(-1)
+            for(var i=0,j=files.length;i<j;i++){
+              statter(path+sep+files[i],false,(depth||0)+1);
+            }
+          })
+          return;
+        }
+        //filtered files.
+        files = res
+      }
       for(var i=0,j=files.length;i<j;i++){
         statter(path+sep+files[i],false,(depth||0)+1);
       }

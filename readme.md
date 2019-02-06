@@ -42,7 +42,6 @@ let result = await walk.async('../',{return_object:true})
 
 ```
 
-
 ## install
 
 	npm install walkdir
@@ -58,15 +57,48 @@ walkdir.sync(path, [options], [callback]);
 - options. supported options are
   - general
 
-	```js
-	{
-	  "follow_symlinks": false, // default is off 
-	  "no_recurse": false,      // only recurse one level deep
-	  "max_depth": undefined    // only recurse down to max_depth. if you need more than no_recurse
-          "track_inodes": true      // on windows or with hardlinks some files are not emitted due to inode collision. 
-          // ^ should be used with max_depth to prevent infinite loop
-	}
-	```
+```js
+{
+  /**
+  * follow symlinks. default FALSE
+  */
+  "follow_symlinks"?: boolean,
+  /**
+    * only go one level deep. convenience param.
+    */ 
+  "no_recurse"?: boolean,
+  /**
+    * only travel to max depth. emits an error if hit.
+    */
+  "max_depth"?: number,
+  /**
+    * on filesystems where inodes are not unique like windows (or perhaps hardlinks) some files may not be emitted due to inode collision.
+    * turning off this behavior may be required but at the same time may lead to hitting max_depth via link loop.
+    */
+  "track_inodes"?: boolean;
+  /**
+    * make this syncronous. the same as calling walkdir.sync
+    */
+  "sync"?:boolean,
+  /**
+    * return an object of {path:stat} instead of just the resolved path names
+    */
+  "return_object"?: boolean,
+  /**
+    * dont build up an internal list or object of all of the paths. this can be an important optimization for listing HUGE trees.
+    */
+  "no_return"?: boolean,
+  /**
+    * filter. filter an array of paths from readdir
+    */
+  "filter"?:(directory:string,files:string[])=>string[]|Promise<string[]>,
+  /**
+    *  pass in a custom fs object like gracfeful-fs
+    *  needs stat, lstat, readdir, readlink and sync verisons if you use sync:true
+    */
+  "fs"?:any
+}
+```
 
   - walkdir.sync/walkdir.async only
 
@@ -88,46 +120,46 @@ walkdir.sync(path, [options], [callback]);
 
 non error type events are emitted with (path,stat). stat is an instanceof fs.Stats
 
-###path
+### path
 fired for everything
 
-###file
+### file
 fired only for regular files
 
-###directory
+### directory
 fired only for directories
 
-###link
+### link
 fired when a symbolic link is found
 
-###end
+### end
 fired when the entire tree has been read and emitted.
 
-###socket
+### socket
 fired when a socket descriptor is found
 
-###fifo
+### fifo
 fired when a fifo is found
 
-###characterdevice
+### characterdevice
 fired when a character device is found
 
-###blockdevice
+### blockdevice
 fired when a block device is found
 
-###targetdirectory
+### targetdirectory
 fired for the stat of the path you provided as the first argument. is is only fired if it is a directory.
 
-###empty
+### empty
 fired for empty directory
 
 ## error events
 error type events are emitted with (path,error). error being the error object returned from an fs call or other opperation.
 
-###error
+### error
 if the target path cannot be read an error event is emitted. this is the only failure case.
 
-###fail
+### fail
 when stat or read fails on a path somewhere in the walk and it is not your target path you get a fail event instead of error.
 This is handy if you want to find places you dont have access too.
 
