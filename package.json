@@ -1,7 +1,7 @@
 {
   "name": "walkdir",
   "description": "Find files simply. Walks a directory tree emitting events based on what it finds. Presents a familiar callback/emitter/a+sync interface. Walk a tree of any depth.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Ryan Day <soldair@gmail.com>",
   "keywords": [
     "find",
