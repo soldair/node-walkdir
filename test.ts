@@ -33,7 +33,9 @@ f.splice(0)
 
 
 walkdir.async("").then((s)=>s.splice(0))
+
 walkdir.async("",{}).then((s)=>s.splice(0))
+
 walkdir.async("",{return_object:true}).then((a)=>{
     a[Object.keys(a)[0]].isDirectory()
 })
