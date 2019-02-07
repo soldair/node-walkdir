@@ -47,6 +47,9 @@ function walkdir(path,options,cb){
   if(typeof options == 'function') cb = options;
 
   options = options || {};
+  if(options.find_links === undefined){
+    options.find_links = true;
+  }
   
   var fs = options.fs || _fs;
 
@@ -127,14 +130,14 @@ function walkdir(path,options,cb){
     if(options.sync) {
       var stat,ex;
       try{
-        stat = fs.lstatSync(path);
+        stat = fs[options.find_links?'lstatSync':'statSync'](path);
       } catch (e) {
         ex = e;
       }
 
       statAction(ex,stat);
     } else {
-        fs.lstat(path,statAction);
+        fs[options.find_links?'lstat':'stat'](path,statAction);
     }
   },readdir = function(path,stat,depth){
     if(!resolved) {

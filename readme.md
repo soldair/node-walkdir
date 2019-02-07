@@ -96,7 +96,11 @@ walkdir.sync(path, [options], [callback]);
     *  pass in a custom fs object like gracfeful-fs
     *  needs stat, lstat, readdir, readlink and sync verisons if you use sync:true
     */
-  "fs"?:any
+  "fs"?:any,
+  /*** 
+   * default True. if false this will use stat insteqad of lstat and not find links at all.
+   */
+  "find_links?":boolean,
 }
 ```
 

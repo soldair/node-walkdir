@@ -67,11 +67,19 @@ declare namespace walkdir {
         /**
          * dont build up an internal list or object of all of the paths. this can be an important optimization for listing HUGE trees.
          */
-        "no_return"?: boolean, // if true null will be returned and no array or object will be created with found paths. useful for large listings
+        "no_return"?: boolean,
         /**
          * filter. filter an array of paths from readdir
          */
         "filter"?:(directory:string,files:string[])=>string[]|Promise<string[]>,
+        /**
+         * provide an alternate implementation of fs like graceful-fs
+         */
+        "fs"?:any,
+        /*** 
+         * default True. if false this will use stat insteqad of lstat and not find links at all.
+         */
+        "find_links"?:boolean,
     }
 
   export type WalkEmitter = EventEmitter&{
