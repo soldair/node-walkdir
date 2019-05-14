@@ -101,7 +101,6 @@ function walkdir(path,options,cb){
         return;
       }
 
-
       //if i have evented this inode already dont again.
       var fileName = _path.basename(path);
       var fileKey = stat.dev + '-' + stat.ino + '-' + fileName;
@@ -140,6 +139,7 @@ function walkdir(path,options,cb){
         fs[options.find_links?'lstat':'stat'](path,statAction);
     }
   },readdir = function(path,stat,depth){
+
     if(!resolved) {
       path = _path.resolve(path);
       resolved = 1;
@@ -178,7 +178,7 @@ function walkdir(path,options,cb){
       if(options.filter){
         var res = options.filter(path,files)
         if(!res){
-          throw new Error('option.filter funtion must return a array of strings or a promise')
+          throw new Error('option.filter function must return a array of strings or a promise')
         }
         // support filters that return a promise
         if(res.then){
@@ -206,7 +206,7 @@ function walkdir(path,options,cb){
       var e,files;
       try {
           files = fs.readdirSync(path);
-      } catch (e) { }
+      } catch (_e) { e = _e}
 
       readdirAction(e,files);
     } else {
@@ -262,7 +262,7 @@ function walkdir(path,options,cb){
   emitter.once('fail',function(_path,err){
     //if the first dir fails its a real error
     if(path == _path) {
-      emitter.emit('error',path,err);
+      emitter.emit('error',new Error('error reading first path in the walk '+path+'\n'+err),err);
     }
   });
 
