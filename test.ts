@@ -62,4 +62,7 @@ j.splice(0)
 let k = walkdir.sync('',{return_object:true})
 k[Object.keys(k)[0]].isDirectory()
 
-
+let l = walkdir.sync('',(path)=>{
+    path.substr
+})
+l.splice(0)
