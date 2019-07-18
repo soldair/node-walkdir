@@ -177,6 +177,7 @@ declare namespace walkdir {
     export function sync(path:string,options:walkdir.WalkOptions&{return_object:true},eventListener?:walkdir.WalkEventListener):{[path:string]:Stats};
     export function sync(path:string,options?:walkdir.WalkOptions&{return_object?:false},eventListener?:walkdir.WalkEventListener):string[];
     export function sync(path:string,options?:walkdir.WalkOptions&{return_object?:boolean},eventListener?:walkdir.WalkEventListener):string[]|{[path:string]:Stats};
+    export function sync(path:string,eventListener?:walkdir.WalkEventListener):string[];
 
     // always sync:false. a promise of whatever is the same as walkdir.
     export function async(path:string,options:walkdir.WalkOptions&{return_object:true},eventListener?:walkdir.WalkEventListener):Promise<{[path:string]:Stats}>;
