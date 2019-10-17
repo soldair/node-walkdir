@@ -10,25 +10,25 @@ export = walkdir;
 
 declare function walkdir(
     path:string,
-    options:{sync:true,return_object:true}&walkdir.WalkOptions, 
+    options:{sync:true,return_object:true}&walkdir.WalkOptions,
     eventListener?:walkdir.WalkEventListener)
     :{[path:string]:Stats};
-    
+
 declare function walkdir(
     path:string,
-    options:{sync:true,return_object?:false}&walkdir.WalkOptions, 
+    options:{sync:true,return_object?:false}&walkdir.WalkOptions,
     eventListener?:walkdir.WalkEventListener)
     :string[];
 
 declare function walkdir(
     path:string,
-    options?:({sync?:false}&walkdir.WalkOptions)|walkdir.WalkEventListener, 
+    options?:({sync?:false}&walkdir.WalkOptions)|walkdir.WalkEventListener,
     eventListener?:walkdir.WalkEventListener)
     :walkdir.WalkEmitter;
 
 declare function walkdir(
     path:string,
-    options?:walkdir.WalkOptions|walkdir.WalkEventListener, 
+    options?:walkdir.WalkOptions|walkdir.WalkEventListener,
     eventListener?:walkdir.WalkEventListener)
     :walkdir.WalkEmitter|string[]|{[path:string]:Stats};
 
@@ -45,7 +45,7 @@ declare namespace walkdir {
         "follow_symlinks"?: boolean,
         /**
          * only go one level deep. convenience param.
-         */ 
+         */
         "no_recurse"?: boolean,
         /**
          * only travel to max depth. emits an error if hit.
@@ -57,7 +57,7 @@ declare namespace walkdir {
          */
         "track_inodes"?: boolean;
         /**
-         * make this syncronous. the same as calling walkdir.sync
+         * make this synchronous. the same as calling walkdir.sync
          */
         "sync"?:boolean,
         /**
@@ -65,7 +65,7 @@ declare namespace walkdir {
          */
         "return_object"?: boolean, // if true the sync return will be in {path:stat} format instead of [path,path,...]
         /**
-         * dont build up an internal list or object of all of the paths. this can be an important optimization for listing HUGE trees.
+         * don't build up an internal list or object of all of the paths. this can be an important optimization for listing HUGE trees.
          */
         "no_return"?: boolean,
         /**
@@ -76,15 +76,15 @@ declare namespace walkdir {
          * provide an alternate implementation of fs like graceful-fs
          */
         "fs"?:any,
-        /*** 
-         * default True. if false this will use stat insteqad of lstat and not find links at all.
+        /**
+         * default True. if false this will use stat instead of lstat and not find links at all.
          */
         "find_links"?:boolean,
     }
 
   export type WalkEmitter = EventEmitter&{
         /**
-         * cancel a walk in progress 
+         * cancel a walk in progress
          */
         end():void
         /**
@@ -153,27 +153,27 @@ declare namespace walkdir {
 
     export type WalkEventListener = (this:WalkEmitter,path:string,stat:Stats,ignore:(path:string|string[])=>void)=>void
 
-    // same a walkdir
+    // same as walkdir
     export function find(
         path:string,
-        options:{sync:true,return_object:true}&walkdir.WalkOptions, 
+        options:{sync:true,return_object:true}&walkdir.WalkOptions,
         eventListener?:walkdir.WalkEventListener)
         :{[path:string]:Stats};
-        
+
     export function find(
         path:string,
-        options:{sync:true,return_object?:false}&walkdir.WalkOptions, 
+        options:{sync:true,return_object?:false}&walkdir.WalkOptions,
         eventListener?:walkdir.WalkEventListener)
         :string[];
-    
+
     export function find(
         path:string,
-        options?:({sync?:false}&walkdir.WalkOptions)|walkdir.WalkEventListener, 
+        options?:({sync?:false}&walkdir.WalkOptions)|walkdir.WalkEventListener,
         eventListener?:walkdir.WalkEventListener)
         :walkdir.WalkEmitter;
 
 
-    //always sync:true but otherwise the same as walkdir
+    // always sync:true but otherwise the same as walkdir
     export function sync(path:string,options:walkdir.WalkOptions&{return_object:true},eventListener?:walkdir.WalkEventListener):{[path:string]:Stats};
     export function sync(path:string,options?:walkdir.WalkOptions&{return_object?:false},eventListener?:walkdir.WalkEventListener):string[];
     export function sync(path:string,options?:walkdir.WalkOptions&{return_object?:boolean},eventListener?:walkdir.WalkEventListener):string[]|{[path:string]:Stats};
