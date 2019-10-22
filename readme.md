@@ -1,8 +1,8 @@
 [![Build Status](https://secure.travis-ci.org/soldair/node-walkdir.png)](http://travis-ci.org/soldair/node-walkdir)
- 
+
 ## walkdir
 
-Find files. Walks a directory tree emitting events based on what it finds. Presents a familliar callback/emitter/sync interface. Walk a tree of any depth. This is a performant option any pull requests to make it more so will be taken into consderation.. 
+Find files. Walks a directory tree emitting events based on what it finds. Presents a familiar callback/emitter/sync interface. Walk a tree of any depth. This is a performant option and pull requests to make it more so will be taken into consideration..
 
 ## Example
 
@@ -10,13 +10,13 @@ Find files. Walks a directory tree emitting events based on what it finds. Prese
 
 var walk = require('walkdir');
 
-//async with path callback 
+// async with path callback
 
 walk('../', function(path, stat) {
   console.log('found: ', path);
 });
 
-//use async emitter to capture more events
+// use async emitter to capture more events
 
 var emitter = walk('../');
 
@@ -25,20 +25,20 @@ emitter.on('file', function(filename, stat) {
 });
 
 
-//sync with callback
+// sync with callback
 
 walk.sync('../', function(path, stat) {
   console.log('found sync:', path);
 });
 
-//sync just need paths
+// sync just need paths
 
 var paths = walk.sync('../');
 console.log('found paths sync: ', paths);
 
 // async await/promise!
 let result = await walk.async('../',{return_object:true})
-//result['path'] = {statObject}
+// result['path'] = {statObject}
 
 ```
 
@@ -65,7 +65,7 @@ walkdir.sync(path, [options], [callback]);
   "follow_symlinks"?: boolean,
   /**
     * only go one level deep. convenience param.
-    */ 
+    */
   "no_recurse"?: boolean,
   /**
     * only travel to max depth. emits an error if hit.
@@ -77,7 +77,7 @@ walkdir.sync(path, [options], [callback]);
     */
   "track_inodes"?: boolean;
   /**
-    * make this syncronous. the same as calling walkdir.sync
+    * make this synchronous. the same as calling walkdir.sync
     */
   "sync"?:boolean,
   /**
@@ -85,7 +85,7 @@ walkdir.sync(path, [options], [callback]);
     */
   "return_object"?: boolean,
   /**
-    * dont build up an internal list or object of all of the paths. this can be an important optimization for listing HUGE trees.
+    * don't build up an internal list or object of all of the paths. this can be an important optimization for listing HUGE trees.
     */
   "no_return"?: boolean,
   /**
@@ -97,8 +97,8 @@ walkdir.sync(path, [options], [callback]);
     *  needs stat, lstat, readdir, readlink and sync verisons if you use sync:true
     */
   "fs"?:any,
-  /*** 
-   * default True. if false this will use stat insteqad of lstat and not find links at all.
+  /**
+   * default True. if false this will use stat instead of lstat and not find links at all.
    */
   "find_links?":boolean,
 }
@@ -165,7 +165,7 @@ if the target path cannot be read an error event is emitted. this is the only fa
 
 ### fail
 when stat or read fails on a path somewhere in the walk and it is not your target path you get a fail event instead of error.
-This is handy if you want to find places you dont have access too.
+This is handy if you want to find places you don't have access too.
 
 ## notes
 the async emitter returned supports 3 methods
@@ -180,7 +180,7 @@ the async emitter returned supports 3 methods
   resume the walk
 
 ### ignore(path or array of paths)
-  will not traverse these directories. may be called in the path event handler to ignore dynamically. 
+  will not traverse these directories. may be called in the path event handler to ignore dynamically.
   ```js
   var walk = require('walkdir');
   var p = require('path');
@@ -194,14 +194,14 @@ the async emitter returned supports 3 methods
 
 ### cancel a walk in progress
   ```js
-  //cancel a walk in progress within callback.
+  // cancel a walk in progress within callback.
 
   var walk = require('walkdir');
   walk('../', function(path, stat) {
     this.end();
   });
 
-  //cancel a walk in progress with emitter handle
+  // cancel a walk in progress with emitter handle
   var walk = require('walkdir');
   var emitter = walk('../');
 
