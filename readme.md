@@ -93,7 +93,7 @@ walkdir.sync(path, [options], [callback]);
     */
   "filter"?:(directory:string,files:string[])=>string[]|Promise<string[]>,
   /**
-    *  pass in a custom fs object like gracfeful-fs
+    *  pass in a custom fs object like graceful-fs
     *  needs stat, lstat, readdir, readlink and sync verisons if you use sync:true
     */
   "fs"?:any,
